@@ -92,7 +92,7 @@ macro_rules! generate_gt_mask {
                 result |= other ^ self;
                 result ^= other;
                 result >>= $bits - 1;
-                return result.wrapping_neg();
+                result.wrapping_neg()
             }
         }
     };
