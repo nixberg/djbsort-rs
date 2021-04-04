@@ -44,6 +44,7 @@ generate_constant_time_sort!(u8);
 generate_constant_time_sort!(u16);
 generate_constant_time_sort!(u32);
 generate_constant_time_sort!(u64);
+generate_constant_time_sort!(u128);
 
 trait MinMax<T> {
     fn minmax_at(&mut self, i: usize, j: usize);
@@ -77,6 +78,7 @@ generate_minmax!(u8);
 generate_minmax!(u16);
 generate_minmax!(u32);
 generate_minmax!(u64);
+generate_minmax!(u128);
 
 trait GreaterThanMask {
     fn gt_mask(self, other: Self) -> Self;
@@ -102,6 +104,7 @@ generate_gt_mask!(u8, 8);
 generate_gt_mask!(u16, 16);
 generate_gt_mask!(u32, 32);
 generate_gt_mask!(u64, 64);
+generate_gt_mask!(u128, 128);
 
 #[cfg(test)]
 mod tests {
@@ -166,6 +169,20 @@ mod tests {
     }
 
     #[test]
+    fn test_sort_u128() {
+        for count in 0..1024 {
+            let mut vec: Vec<u128> = rand::thread_rng()
+                .sample_iter(rand::distributions::Standard)
+                .take(count)
+                .collect();
+            let mut expected = vec.to_vec();
+            vec.ct_sort();
+            expected.sort();
+            assert_eq!(vec, expected);
+        }
+    }
+
+    #[test]
     fn test_gt_mask_u8() {
         for lhs in 0..=u8::MAX {
             for rhs in 0..=u8::MAX {
@@ -203,6 +220,23 @@ mod tests {
             assert_eq!(
                 lhs.gt_mask(rhs),
                 if lhs > rhs { 0xffff_ffff_ffff_ffff } else { 0 }
+            );
+        }
+    }
+
+    #[test]
+    fn test_gt_mask_u128() {
+        let mut rng = rand::thread_rng();
+        for _ in 0..1024 {
+            let lhs: u128 = rng.gen();
+            let rhs: u128 = rng.gen();
+            assert_eq!(
+                lhs.gt_mask(rhs),
+                if lhs > rhs {
+                    0xffff_ffff_ffff_ffff_ffff_ffff_ffff_ffff
+                } else {
+                    0
+                }
             );
         }
     }
