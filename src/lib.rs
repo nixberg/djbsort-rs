@@ -1,11 +1,11 @@
 pub trait ConstantTimeSort {
-    fn constant_time_sort(&mut self);
+    fn ct_sort(&mut self);
 }
 
 macro_rules! generate_constant_time_sort {
     ($t:ty) => {
         impl ConstantTimeSort for [$t] {
-            fn constant_time_sort(&mut self) {
+            fn ct_sort(&mut self) {
                 use std::iter::successors;
 
                 if let Some(top) = successors(Some(1usize), |t| t.checked_mul(2))
@@ -117,7 +117,7 @@ mod tests {
                 .take(count)
                 .collect();
             let mut expected = vec.to_vec();
-            vec.constant_time_sort();
+            vec.ct_sort();
             expected.sort();
             assert_eq!(vec, expected);
         }
@@ -131,7 +131,7 @@ mod tests {
                 .take(count)
                 .collect();
             let mut expected = vec.to_vec();
-            vec.constant_time_sort();
+            vec.ct_sort();
             expected.sort();
             assert_eq!(vec, expected);
         }
@@ -145,7 +145,7 @@ mod tests {
                 .take(count)
                 .collect();
             let mut expected = vec.to_vec();
-            vec.constant_time_sort();
+            vec.ct_sort();
             expected.sort();
             assert_eq!(vec, expected);
         }
@@ -159,7 +159,7 @@ mod tests {
                 .take(count)
                 .collect();
             let mut expected = vec.to_vec();
-            vec.constant_time_sort();
+            vec.ct_sort();
             expected.sort();
             assert_eq!(vec, expected);
         }
