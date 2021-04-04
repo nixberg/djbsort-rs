@@ -111,9 +111,8 @@ mod tests {
 
     #[test]
     fn test_sort_u8() {
-        let rng = rand::thread_rng();
-        for count in 0..=128 {
-            let mut vec: Vec<u8> = rng
+        for count in 0..1024 {
+            let mut vec: Vec<u8> = rand::thread_rng()
                 .sample_iter(rand::distributions::Standard)
                 .take(count)
                 .collect();
@@ -126,9 +125,8 @@ mod tests {
 
     #[test]
     fn test_sort_u16() {
-        let rng = rand::thread_rng();
-        for count in 0..=128 {
-            let mut vec: Vec<u16> = rng
+        for count in 0..1024 {
+            let mut vec: Vec<u16> = rand::thread_rng()
                 .sample_iter(rand::distributions::Standard)
                 .take(count)
                 .collect();
@@ -141,9 +139,8 @@ mod tests {
 
     #[test]
     fn test_sort_u32() {
-        let rng = rand::thread_rng();
-        for count in 0..=128 {
-            let mut vec: Vec<u32> = rng
+        for count in 0..1024 {
+            let mut vec: Vec<u32> = rand::thread_rng()
                 .sample_iter(rand::distributions::Standard)
                 .take(count)
                 .collect();
@@ -156,9 +153,8 @@ mod tests {
 
     #[test]
     fn test_sort_u64() {
-        let rng = rand::thread_rng();
-        for count in 0..=128 {
-            let mut vec: Vec<u64> = rng
+        for count in 0..1024 {
+            let mut vec: Vec<u64> = rand::thread_rng()
                 .sample_iter(rand::distributions::Standard)
                 .take(count)
                 .collect();
