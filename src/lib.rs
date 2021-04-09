@@ -108,136 +108,59 @@ generate_gt_mask!(u128, 128);
 
 #[cfg(test)]
 mod tests {
-    use crate::ConstantTimeSort;
-    use crate::GreaterThanMask;
     use rand::Rng;
 
-    #[test]
-    fn test_sort_u8() {
-        for count in 0..1024 {
-            let mut vec: Vec<u8> = rand::thread_rng()
-                .sample_iter(rand::distributions::Standard)
-                .take(count)
-                .collect();
-            let mut expected = vec.to_vec();
-            vec.ct_sort();
-            expected.sort();
-            assert_eq!(vec, expected);
-        }
+    use crate::ConstantTimeSort;
+    use crate::GreaterThanMask;
+
+    macro_rules! sort_random {
+        ($name:ident, $t:ty, $n:expr) => {
+            #[test]
+            fn $name() {
+                for count in 0..$n {
+                    let mut vec: Vec<$t> = rand::thread_rng()
+                        .sample_iter(rand::distributions::Standard)
+                        .take(count)
+                        .collect();
+                    let mut expected = vec.to_vec();
+                    vec.ct_sort();
+                    expected.sort();
+                    assert_eq!(vec, expected);
+                }
+            }
+        };
     }
 
-    #[test]
-    fn test_sort_u16() {
-        for count in 0..1024 {
-            let mut vec: Vec<u16> = rand::thread_rng()
-                .sample_iter(rand::distributions::Standard)
-                .take(count)
-                .collect();
-            let mut expected = vec.to_vec();
-            vec.ct_sort();
-            expected.sort();
-            assert_eq!(vec, expected);
-        }
-    }
+    sort_random!(sort_u8_random, u8, 1024);
+    sort_random!(sort_u16_random, u16, 1024);
+    sort_random!(sort_u32_random, u32, 1024);
+    sort_random!(sort_u64_random, u64, 1024);
+    sort_random!(sort_u128_random, u128, 1024);
 
     #[test]
-    fn test_sort_u32() {
-        for count in 0..1024 {
-            let mut vec: Vec<u32> = rand::thread_rng()
-                .sample_iter(rand::distributions::Standard)
-                .take(count)
-                .collect();
-            let mut expected = vec.to_vec();
-            vec.ct_sort();
-            expected.sort();
-            assert_eq!(vec, expected);
-        }
-    }
-
-    #[test]
-    fn test_sort_u64() {
-        for count in 0..1024 {
-            let mut vec: Vec<u64> = rand::thread_rng()
-                .sample_iter(rand::distributions::Standard)
-                .take(count)
-                .collect();
-            let mut expected = vec.to_vec();
-            vec.ct_sort();
-            expected.sort();
-            assert_eq!(vec, expected);
-        }
-    }
-
-    #[test]
-    fn test_sort_u128() {
-        for count in 0..1024 {
-            let mut vec: Vec<u128> = rand::thread_rng()
-                .sample_iter(rand::distributions::Standard)
-                .take(count)
-                .collect();
-            let mut expected = vec.to_vec();
-            vec.ct_sort();
-            expected.sort();
-            assert_eq!(vec, expected);
-        }
-    }
-
-    #[test]
-    fn test_gt_mask_u8() {
+    fn gt_mask_u8_exhaustive() {
         for lhs in 0..=u8::MAX {
             for rhs in 0..=u8::MAX {
-                assert_eq!(lhs.gt_mask(rhs), if lhs > rhs { 0xff } else { 0 });
+                assert_eq!(lhs.gt_mask(rhs), if lhs > rhs { u8::MAX } else { 0 });
             }
         }
     }
 
-    #[test]
-    fn test_gt_mask_u16() {
-        let mut rng = rand::thread_rng();
-        for _ in 0..1024 {
-            let lhs: u16 = rng.gen();
-            let rhs: u16 = rng.gen();
-            assert_eq!(lhs.gt_mask(rhs), if lhs > rhs { 0xffff } else { 0 });
-        }
-    }
-
-    #[test]
-    fn test_gt_mask_u32() {
-        let mut rng = rand::thread_rng();
-        for _ in 0..1024 {
-            let lhs: u32 = rng.gen();
-            let rhs: u32 = rng.gen();
-            assert_eq!(lhs.gt_mask(rhs), if lhs > rhs { 0xffff_ffff } else { 0 });
-        }
-    }
-
-    #[test]
-    fn test_gt_mask_u64() {
-        let mut rng = rand::thread_rng();
-        for _ in 0..1024 {
-            let lhs: u64 = rng.gen();
-            let rhs: u64 = rng.gen();
-            assert_eq!(
-                lhs.gt_mask(rhs),
-                if lhs > rhs { 0xffff_ffff_ffff_ffff } else { 0 }
-            );
-        }
-    }
-
-    #[test]
-    fn test_gt_mask_u128() {
-        let mut rng = rand::thread_rng();
-        for _ in 0..1024 {
-            let lhs: u128 = rng.gen();
-            let rhs: u128 = rng.gen();
-            assert_eq!(
-                lhs.gt_mask(rhs),
-                if lhs > rhs {
-                    0xffff_ffff_ffff_ffff_ffff_ffff_ffff_ffff
-                } else {
-                    0
+    macro_rules! gt_mask_random {
+        ($name:ident, $t:ty, $n:expr) => {
+            #[test]
+            fn $name() {
+                for _ in 0..($n) {
+                    let lhs: $t = rand::thread_rng().gen();
+                    let rhs: $t = rand::thread_rng().gen();
+                    assert_eq!(lhs.gt_mask(rhs), if lhs > rhs { <$t>::MAX } else { 0 });
                 }
-            );
-        }
+            }
+        };
     }
+
+    gt_mask_random!(gt_mask_u16_random, u16, 1024);
+    gt_mask_random!(gt_mask_u32_random, u32, 1024);
+    gt_mask_random!(gt_mask_u64_random, u64, 1024);
+    gt_mask_random!(gt_mask_u128_random, u128, 1024);
 }
